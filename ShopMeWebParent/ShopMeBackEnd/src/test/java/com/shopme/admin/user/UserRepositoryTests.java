@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.annotation.Rollback;
 
 import java.util.List;
@@ -15,7 +18,7 @@ import java.util.List;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.registerCustomDateFormat;
 
-@DataJpaTest
+@DataJpaTest(showSql = false)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Rollback(false)
 public class UserRepositoryTests {
@@ -98,4 +101,61 @@ public class UserRepositoryTests {
         assertThat(user).isNotNull();
     }
 
+    @Test
+    public void testCountById(){
+        Integer id = 23;
+
+        Long countById = repo.countById(id);
+
+        assertThat(countById).isGreaterThan(0);
+    }
+
+
+    @Test
+    public void testDisabledUser(){
+        Integer id = 9;
+
+        repo.updateEnabledStatus(id, false);
+    }
+
+    @Test
+    public void testEnabledUser(){
+        Integer id = 25;
+
+        repo.updateEnabledStatus(id, true);
+    }
+
+    @Test
+    public void testListFIrstPage(){
+        int pageNumber = 0;
+        int pageSize = 4;
+
+        Pageable pageable = PageRequest.of(pageNumber,pageSize);
+
+        Page<User> page = repo.findAll(pageable);
+
+        List<User> listUsers = page.getContent();
+
+        listUsers.forEach(user -> System.out.println(user));
+
+
+        assertThat(listUsers.size()).isEqualTo(pageSize);
+    }
+
+    @Test
+    public void testSearchUsers(){
+        String keyword = "bruce";
+        int pageNumber = 0;
+        int pageSize = 4;
+
+        Pageable pageable = PageRequest.of(pageNumber,pageSize);
+
+        Page<User> page = repo.findAll(keyword,pageable);
+
+        List<User> listUsers = page.getContent();
+
+        listUsers.forEach(user -> System.out.println(user));
+
+        assertThat(listUsers.size()).isGreaterThan(0);
+    }
 }

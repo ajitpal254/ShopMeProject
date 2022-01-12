@@ -1,11 +1,12 @@
 package com.shopme.common.entity;
 
 import javax.persistence.*;
+import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 public class User {
 
     @Id
@@ -26,7 +27,7 @@ public class User {
 
     @ManyToMany
     @JoinTable(
-            name = "user_roles",
+            name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
@@ -119,5 +120,13 @@ public class User {
                 ", lastName='" + lastName + '\'' +
                 ", roles=" + roles +
                 '}';
+    }
+    @Transient
+    public String getPhotosImagePath(){
+        System.out.println("user-photos/"+this.id+"/"+this.photos);
+        if(id==null||photos ==null) return "../../../../ShopMeWebParent/ShopMeBackEnd/src/main/resources/static/images/Defaultuser.png";
+        else {
+            return "user-photos/" + this.id + "/" + this.photos;
+        }
     }
 }
