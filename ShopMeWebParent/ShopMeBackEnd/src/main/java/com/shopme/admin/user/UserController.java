@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
@@ -83,16 +84,23 @@ public class UserController {
             String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
             user.setPhotos(fileName);
             User savedUser = service.save(user);
-            String uploadDir = "ShopMeWebParent/ShopMeBackEnd/user-photos/"+savedUser.getId();
+            String uploadDir = "user-photos/"+savedUser.getId();
             FileUploadUtil.cleanDir(uploadDir);
             FileUploadUtil.saveFile(uploadDir,fileName,multipartFile);
         }
-
-
+            else{
+                if(user.getPhotos().isEmpty()){ user.setPhotos(null);}
+                service.save(user);
+        }
         //service.save(user);
 
         redirectAttributes.addFlashAttribute("message","The User Has Been Saved Successfully");
-        return "redirect:/users";
+        return getRedirectedURLtoAffectedUser(user);
+    }
+
+    private String getRedirectedURLtoAffectedUser(User user) {
+        String firstEmail = user.getEmail().split("@")[0];
+        return "redirect:/users/page/1?sortField=id&sortDir=asc&keyword=" + firstEmail;
     }
 
     @GetMapping("/users/edit/{id}")
@@ -139,4 +147,30 @@ public class UserController {
         return "redirect:/users";
     }
 
+    @GetMapping("/users/export/csv")
+    public void exportToCSV(HttpServletResponse response) throws IOException {
+        List<User> listUsers = service.lisatAll();
+        UserCsvExporter exporter = new UserCsvExporter();
+        exporter.export(listUsers,response);
+    }
+    @GetMapping("/users/export/excel")
+    public void exportToExcel(HttpServletResponse response) throws IOException {
+        List<User> listUsers = service.lisatAll();
+
+        UserExcelExporter exporter = new UserExcelExporter();
+
+
+        exporter.export(listUsers,response);
+
+    }
+    @GetMapping("/users/export/pdf")
+    public void exportToPdf(HttpServletResponse response) throws IOException {
+        List<User> listUsers = service.lisatAll();
+
+        UserPdfExporter exporter = new UserPdfExporter();
+
+
+        exporter.export(listUsers,response);
+
+    }
 }

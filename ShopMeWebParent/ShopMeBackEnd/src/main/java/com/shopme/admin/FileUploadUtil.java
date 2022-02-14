@@ -16,7 +16,6 @@ public class FileUploadUtil {
                                 String fileName,
                                 MultipartFile multipartFile) throws IOException {
         Path uploadPath = Paths.get(uploadDir);
-
         if(!Files.exists(uploadPath)){
             Files.createDirectories(uploadPath);
         }
@@ -29,19 +28,18 @@ public class FileUploadUtil {
     }
     public static void cleanDir(String dir){
         Path dirPath = Paths.get(dir);
-
         try {
             Files.list(dirPath).forEach(file -> {
                 if(!Files.isDirectory(file)){
                     try {
                         Files.delete(file);
                     } catch (IOException e) {
-                        System.out.println("Could not delete File" +  file);
+                        System.out.println("Could not delete File " +  file);
                     }
                 }
             });
         } catch (IOException e) {
-            System.out.println("Could not list Directory" + dirPath);
+            System.out.println("Could not list Directory " +dirPath);
         }
     }
 }

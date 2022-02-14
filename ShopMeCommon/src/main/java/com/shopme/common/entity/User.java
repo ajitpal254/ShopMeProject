@@ -1,5 +1,7 @@
 package com.shopme.common.entity;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 import java.nio.file.Path;
 import java.util.HashSet;
@@ -10,7 +12,8 @@ import java.util.Set;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO,generator="seq")
+    @GenericGenerator(name = "seq", strategy="increment")
     private Integer id;
     @Column(length = 128,nullable = false,unique = true)
     private String email;
@@ -118,13 +121,13 @@ public class User {
                 ", email='" + email + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
+                ", photos='" + photos + '\'' +
                 ", roles=" + roles +
                 '}';
     }
     @Transient
     public String getPhotosImagePath(){
-        System.out.println("user-photos/"+this.id+"/"+this.photos);
-        if(id==null||photos ==null) return "../../../../ShopMeWebParent/ShopMeBackEnd/src/main/resources/static/images/Defaultuser.png";
+        if(id==null||photos ==null) return "images/Defaultuser.png";
         else {
             return "user-photos/" + this.id + "/" + this.photos;
         }
