@@ -10,17 +10,17 @@
     }
 
     div.less-details {
-        display: inline-block !important;
+        display: block !important;
     }
 }
 @media screen and (min-width: 768px) and (max-width: 1024px){
     /* medium screen */
     div.full-details {display: block; }
-    div.less-details {display: none  !important;}
+    div.less-details {display: none  ;}
     .hideable-column { display: none ; }
 }
 @media screen and (max-width: 1024px){
     /* large screen */
-    div.less-details {display: none !important;}
+    div.less-details {display: none }
     .hideable-column { display: table-cell ; }
 }
