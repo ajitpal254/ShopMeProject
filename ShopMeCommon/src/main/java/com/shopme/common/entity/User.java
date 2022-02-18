@@ -28,7 +28,7 @@ public class User {
 
     private boolean enabled;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -131,5 +131,10 @@ public class User {
         else {
             return "user-photos/" + this.id + "/" + this.photos;
         }
+    }
+
+    @Transient
+    public String getFullname(){
+        return firstName+' '+lastName;
     }
 }

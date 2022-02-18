@@ -87,7 +87,7 @@ public class UserRepositoryTests {
     }
     @Test
     public void testDeleteUser(){
-        Integer userId = 10;
+        Integer userId =1;
         repo.deleteById(userId);
 
     }
